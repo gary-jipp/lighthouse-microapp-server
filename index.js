@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
+const uuid = require("uuid");
 
 const app = express();
 app.use(cors());
@@ -19,10 +20,12 @@ function getRandomInt(min, max) {
 app.get('/api/kanye', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   
+  console.log("Request..") ;
   // Every so often inject our own message
   const random = getRandomInt(1, 5);
   if (random === 3) {
-    const reply = { quote };
+    const id = uuid.v1();
+    const reply = { id, quote };
     return res.end(JSON.stringify(reply));
   }
 
@@ -32,6 +35,8 @@ app.get('/api/kanye', (req, res) => {
   axios.get(url)
     .then(result => {
       const reply = result.data;
+      const id = uuid.v1();
+      reply.id = id;
       return res.end(JSON.stringify(reply));
     });
 
